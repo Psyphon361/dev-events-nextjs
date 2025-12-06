@@ -35,7 +35,7 @@ const BookingSchema = new Schema<IBooking>(
   }
 );
 
-// Pre-save hook: Verify that the referenced event exists
+// Pre-save hook: Verify that the referenced events exists
 BookingSchema.pre('save', async function (next) {
   // Only validate eventId if it's new or modified
   if (this.isModified('eventId')) {
@@ -43,14 +43,14 @@ BookingSchema.pre('save', async function (next) {
       // Dynamically import Event model to avoid circular dependencies
       const Event = models.Event || (await import('./event.model')).default;
       
-      // Check if the event exists
+      // Check if the events exists
       const eventExists = await Event.exists({ _id: this.eventId });
       
       if (!eventExists) {
-        return next(new Error('Referenced event does not exist'));
+        return next(new Error('Referenced events does not exist'));
       }
     } catch (error) {
-      return next(new Error('Failed to validate event reference'));
+      return next(new Error('Failed to validate events reference'));
     }
   }
 
@@ -60,7 +60,7 @@ BookingSchema.pre('save', async function (next) {
 // Create index on eventId for faster lookups
 BookingSchema.index({ eventId: 1 });
 
-// Compound index for querying bookings by event and email
+// Compound index for querying bookings by events and email
 BookingSchema.index({ eventId: 1, email: 1 });
 
 // Prevent model recompilation in development (Next.js hot reload)
