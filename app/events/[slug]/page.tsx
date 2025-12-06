@@ -35,7 +35,32 @@ const EventTags = ({ tags }: { tags: string[] }) => (
 
 const EventDetailsPage = async ({ params }: { params: Promise<{ slug: string }> }) => {
     const { slug } = await params;
-    const request = await fetch(`${BASE_URL}/api/events/${slug}`);
+
+    let eventData;
+
+    try {
+        const response = await fetch(`${BASE_URL}/api/events/${slug}`);
+
+        // Check if response is ok before parsing JSON
+        if (!response.ok) {
+            // Handle 404 or other error responses
+            return notFound();
+        }
+
+        eventData = await response.json();
+
+        // Validate response shape
+        if (!eventData || !eventData.event) {
+            console.error("Invalid response shape: missing event data");
+            return notFound();
+        }
+    } catch (error) {
+        // Handle network errors or JSON parsing failures
+        console.error("Failed to fetch event:", error);
+        return notFound();
+    }
+
+    // Destructure event properties after validation
     const {
         event: {
             description,
@@ -50,8 +75,9 @@ const EventDetailsPage = async ({ params }: { params: Promise<{ slug: string }> 
             tags,
             organizer
         }
-    } = await request.json();
+    } = eventData;
 
+    // Final validation check
     if (!description) return notFound();
 
     const bookings = 10;

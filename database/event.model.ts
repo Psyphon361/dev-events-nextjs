@@ -144,9 +144,6 @@ EventSchema.pre('save', function (next) {
   next();
 });
 
-// Create index on slug for faster queries
-EventSchema.index({ slug: 1 });
-
 // Prevent model recompilation in development (Next.js hot reload)
 const Event = models.Event || model<IEvent>('Event', EventSchema);
 

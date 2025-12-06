@@ -8,8 +8,31 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 const Page = async () => {
     "use cache";
     cacheLife("hours");
-    const response = await fetch(`${BASE_URL}/api/events`);
-    const { events } = (await response.json());
+
+    let events: IEvent[] = [];
+
+    try {
+        const response = await fetch(`${BASE_URL}/api/events`);
+
+        // Check if response is ok before parsing JSON
+        if (!response.ok) {
+            console.error(`Failed to fetch events: ${response.status} ${response.statusText}`);
+            // Continue with empty events array
+        } else {
+            const data = await response.json();
+
+            // Validate response shape and safely assign events
+            if (data && Array.isArray(data.events)) {
+                events = data.events;
+            } else {
+                console.error("Invalid response shape: events is not an array");
+            }
+        }
+    } catch (error) {
+        // Handle network errors or JSON parsing failures
+        console.error("Error fetching events:", error);
+        // Continue with empty events array for graceful degradation
+    }
 
     return (
         <section>
