@@ -16,8 +16,8 @@
     "mongoose": "^8.19.4",
     "next": "16.0.1",
     "ogl": "^1.0.11",
-    "posthog-js": "^1.290.0",
-    "posthog-node": "^5.11.2",
+    "posthog-js": "^1.302.2",
+    "posthog-node": "^5.17.2",
     "react": "19.2.0",
     "react-dom": "19.2.0",
     "tailwind-merge": "^3.3.1"
